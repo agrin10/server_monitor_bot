@@ -1,10 +1,11 @@
 import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.client.session.aiohttp import AiohttpSession
-from bot.handlers import start, status
 import logging
 from bot.config import Config
 
+from bot.handlers import start, status
+from bot.services.monitor import monitor_system
 
 logging.basicConfig(
 format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -21,6 +22,9 @@ async def main():
     dp = Dispatcher()
     dp.include_router(start.router)
     dp.include_router(status.router)
+
+    # start background task
+    asyncio.create_task(monitor_system(bot))
 
     try:
         await dp.start_polling(bot)
