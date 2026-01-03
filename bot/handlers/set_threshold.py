@@ -4,6 +4,8 @@ from aiogram.types import Message
 
 from bot.services.settings import Settings
 from bot.config import Config
+from bot.database.settings_repo import update_cpu, update_ram
+
 
 router = Router()   
 
@@ -39,11 +41,13 @@ async def set_threshold_handler(message: Message):
     if target == "cpu":
         Settings.cpu_threshold = value
         Settings.reset_cpu_alert()
+        update_cpu(value)
         await message.answer(f"✅ CPU threshold set to {value}%")
 
-    elif target in ["ram", "memory"]:
-        Settings.memory_threshold = value
+    elif target in ("ram", "memory"):
+        Settings.ram_threshold = value
         Settings.reset_ram_alert()
+        update_ram(value)
         await message.answer(f"✅ Memory threshold set to {value}%")
 
     else:
