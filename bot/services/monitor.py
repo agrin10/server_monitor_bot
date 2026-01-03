@@ -1,33 +1,33 @@
 import asyncio
 from bot.utils.system import get_cpu, get_ram
 from bot.config import Config
-
-last_cpu_alert = False
-last_ram_alert = False
+from bot.services.settings import Settings
 
 async def monitor_system(bot):
-    global last_cpu_alert , last_ram_alert
     while True:
         cpu = get_cpu()
         ram = get_ram()
 
-        #cpu alert 
-        if cpu >=Config.CPU_ALERT and not last_cpu_alert:
+        # CPU
+        if cpu >= Settings.cpu_threshold and not Settings.cpu_alert_active:
             await bot.send_message(
                 Config.ADMIN_ID,
-                f"🚨 CPU ALERT\n\nCPU usage is {cpu}%"
+                f"🚨 CPU ALERT\nCPU: {cpu}%\nThreshold: {Settings.cpu_threshold}%"
             )
-            last_cpu_alert = True
+            Settings.cpu_alert_active = True
 
-        if cpu < Config.CPU_ALERT:
-            last_cpu_alert = False
+        if cpu < Settings.cpu_threshold:
+            Settings.cpu_alert_active = False
 
-        # ram alert
-        if ram >= Config.MEMORY_ALERT and not last_ram_alert:
+        # RAM
+        if ram >= Settings.memory_threshold and not Settings.ram_alert_active:
             await bot.send_message(
                 Config.ADMIN_ID,
-                f"🚨 MEMORY ALERT\n\nMemory usage is {ram}%"
+                f"🚨 RAM ALERT\nRAM: {ram}%\nThreshold: {Settings.memory_threshold}%"
             )
-            last_ram_alert = True
-        if ram < Config.MEMORY_ALERT:
-            last_ram_alert = False
+            Settings.ram_alert_active = True
+
+        if ram < Settings.memory_threshold:
+            Settings.ram_alert_active = False
+
+        await asyncio.sleep(Config.CHECK_INTERVAL)

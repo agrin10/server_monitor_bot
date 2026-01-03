@@ -4,12 +4,12 @@ from aiogram.client.session.aiohttp import AiohttpSession
 import logging
 from bot.config import Config
 
-from bot.handlers import start, status
+from bot.handlers import start, status , set_threshold
 from bot.services.monitor import monitor_system
 
 logging.basicConfig(
-format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-level=logging.INFO
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=logging.INFO
 )
 
 async def main():
@@ -22,6 +22,7 @@ async def main():
     dp = Dispatcher()
     dp.include_router(start.router)
     dp.include_router(status.router)
+    dp.include_router(set_threshold.router)
 
     # start background task
     asyncio.create_task(monitor_system(bot))
