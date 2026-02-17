@@ -6,8 +6,6 @@ from bot.config import Config
 
 from bot.handlers import start, status , set_threshold
 from bot.services.monitor import monitor_system
-from bot.database import init_db
-from bot.services.settings import Settings
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -26,15 +24,14 @@ async def main():
     dp.include_router(status.router)
     dp.include_router(set_threshold.router)
 
-    init_db()
-    Settings.load()
-    # start background task
+    # Start background monitoring task
     asyncio.create_task(monitor_system(bot))
 
     try:
         await dp.start_polling(bot)
     finally:
         await bot.session.close()
+
 
 if __name__ == "__main__":
     asyncio.run(main())

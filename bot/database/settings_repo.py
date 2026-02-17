@@ -1,27 +1,29 @@
-from bot.database.db import get_connection
+from bot.database.redis_client import redis_client
 
-def get_settings():
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT cpu_threshold, ram_threshold FROM settings LIMIT 1")
-
-    row = cursor.fetchone()
-    conn.close()
-    return row
-
-def update_cpu(value):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("UPDATE settings SET cpu_threshold = ?", (value,))
-
-    conn.commit()
-    conn.close()
+SETTINGS_KEY = "system:thresholds"
 
 
-def update_ram(value):
-    conn = get_connection()
-    cursor  = conn.cursor()
-    cursor.execute("UPDATE settings SET ram_threshold = ?",(value,))
+def update_cpu(value: float):
+    redis_client.hset(SETTINGS_KEY, "cpu_threshold", value)
 
-    conn.commit()
-    conn.close()
+
+def update_ram(value: float):
+    redis_client.hset(SETTINGS_KEY, "ram_threshold", value)
+
+
+def get_cpu():
+    value = redis_client.hget(SETTINGS_KEY, "cpu_threshold")
+    return float(value) if value else 80.0
+
+
+def get_ram():
+    value = redis_client.hget(SETTINGS_KEY, "ram_threshold")
+    return float(value) if value else 75.0
+
+
+def reset_cpu_alert():
+    redis_client.delete("alert:cpu")
+
+
+def reset_ram_alert():
+    redis_client.delete("alert:ram")

@@ -1,22 +1,29 @@
-from bot.database.settings_repo import get_settings
+from bot.database.settings_repo import (
+    get_cpu,
+    get_ram,
+    update_cpu,
+    update_ram,
+    reset_cpu_alert,
+    reset_ram_alert
+)
 
 class Settings:
-    cpu_threshold: int = 80
-    ram_threshold: int = 80
+    @property
+    def cpu_threshold(self):
+        return get_cpu()
+    
+    @property
+    def ram_threshold(self):
+        return get_ram()
+    
+    @staticmethod
+    def reset_cpu_alert():
+        reset_cpu_alert()
 
-    cpu_alert_active: bool = False
-    ram_alert_active: bool = False
+    @staticmethod
+    def reset_ram_alert():
+        reset_ram_alert()
 
-    @classmethod
-    def load(cls):
-        cpu, ram = get_settings()
-        cls.cpu_threshold = cpu
-        cls.ram_threshold = ram
+    
 
-    @classmethod
-    def reset_cpu_alert(cls):
-        cls.cpu_alert_active = False
-
-    @classmethod
-    def reset_ram_alert(cls):
-        cls.ram_alert_active = False
+settings = Settings()

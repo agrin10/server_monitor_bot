@@ -2,3 +2,4 @@ python-dotenv
 psutil 
 aiogram 
 aiohttp-socks
+redis>=5.0.0
