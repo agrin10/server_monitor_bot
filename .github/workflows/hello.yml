@@ -1,5 +1,6 @@
 name: My First GitHub Action
 on: push
+  branches: [git-action]
 
 jobs:
   my-first-action:
