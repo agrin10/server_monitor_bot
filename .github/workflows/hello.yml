@@ -1,12 +1,23 @@
 name: My First GitHub Action
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - git-actiin
+    workflow_dispatch:
 
 jobs:
   my-first-action:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Print a message
-        run: echo "Hello, world!"
+      - name: checkout code
+        uses: actions/checkout@v3
+
+      - name: list repo files
+        run: ls -la
+
+      - name: print a message
+        run : echo "deploying to $ENVIRONMENT" 
+        env: 
+          ENVIRONMENT: staging 
