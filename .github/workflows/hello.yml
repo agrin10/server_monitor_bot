@@ -3,20 +3,33 @@ name: My First GitHub Action
 on:
   push:
     branches:
-      - git-action        # also double check: is this "git-actiin" or "git-action"?
+      - git-action
   workflow_dispatch:
 
 jobs:
-  my-first-action:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: checkout code
         uses: actions/checkout@v4
 
-      - name: list repo files
-        run: ls -la
+      - name: create a file
+        run: echo "Built at $(date)" > build-info.txt
 
-      - name: print a message
-        run: echo "deploying to $ENVIRONMENT"
-        env:
-          ENVIRONMENT: staging
+      - name: upload the file as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: build-info.txt
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: download the artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+
+      - name: show what we got
+        run: cat build-info.txt
