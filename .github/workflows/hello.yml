@@ -3,21 +3,20 @@ name: My First GitHub Action
 on:
   push:
     branches:
-      - git-actiin
-    workflow_dispatch:
+      - git-action        # also double check: is this "git-actiin" or "git-action"?
+  workflow_dispatch:
 
 jobs:
   my-first-action:
     runs-on: ubuntu-latest
-
     steps:
       - name: checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: list repo files
         run: ls -la
 
       - name: print a message
-        run : echo "deploying to $ENVIRONMENT" 
-        env: 
-          ENVIRONMENT: staging 
+        run: echo "deploying to $ENVIRONMENT"
+        env:
+          ENVIRONMENT: staging
