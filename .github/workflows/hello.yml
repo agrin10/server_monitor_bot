@@ -1,9 +1,12 @@
 name: My First GitHub Action
-on: workflow_dispatch
+
+on:
+  workflow_dispatch:
 
 jobs:
   my-first-action:
     runs-on: ubuntu-latest
+
     steps:
-      - name: print a message
-        run: echo "Hello,world!"
+      - name: Print a message
+        run: echo "Hello, world!"
